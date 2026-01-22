@@ -20,8 +20,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "es2020",
-    "types": ["vitest/globals"]
+    "target": "es2020"
   },
   "exclude": ["node_modules"],
   "include": [
