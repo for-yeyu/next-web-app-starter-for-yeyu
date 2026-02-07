@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Button } from '@/ui/shadcn/button'
 
+// biome-ignore lint/suspicious/noShadowRestrictedNames: <ignore>
 export default function Error() {
   return (
     <div className="flex flex-col items-center">

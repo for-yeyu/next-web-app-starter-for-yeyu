@@ -35,7 +35,7 @@ export const ErrorHandler: FC = () => {
         if (lastError.needFix) {
           console.error(lastError)
         } else {
-          // eslint-disable-next-line no-console
+          // biome-ignore lint/suspicious/noConsole: <ignore>
           console.log(lastError)
         }
       } else {
