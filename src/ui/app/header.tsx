@@ -4,7 +4,7 @@ import type { ComponentProps, FC } from 'react'
 import Link from 'next/link'
 import { appName } from '@/configs/app'
 import { cn } from '@/lib/utils/shadcn'
-import { SwitchTheme } from './switch-theme'
+import { SwitchTheme } from '../components/shared/switch-theme'
 
 export const Header: FC<ComponentProps<'div'>> = ({ className, ...props }) => {
   return (
