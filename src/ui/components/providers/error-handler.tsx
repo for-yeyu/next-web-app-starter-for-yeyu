@@ -4,7 +4,7 @@ import type { FC } from 'react'
 import { useAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
-import { BaseError } from '@/lib/errors/base'
+import { BaseError } from '@/lib/common/errors/base'
 import { lastErrorAtom } from '@/lib/states/errors'
 
 export const ErrorHandler: FC = () => {

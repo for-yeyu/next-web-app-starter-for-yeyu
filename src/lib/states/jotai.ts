@@ -3,7 +3,7 @@ import type { SyncStorage } from 'jotai/vanilla/utils/atomWithStorage'
 import type { ZodType } from 'zod'
 import { atom, createStore } from 'jotai'
 import { atomWithStorage as jotaiAtomWithStorage, RESET } from 'jotai/utils'
-import { deserialize, serialize } from './json'
+import { deserialize, serialize } from '../utils/json'
 
 export const store = createStore()
 

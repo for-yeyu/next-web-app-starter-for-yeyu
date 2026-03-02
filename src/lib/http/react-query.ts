@@ -1,6 +1,6 @@
 import { QueryCache, QueryClient } from '@tanstack/react-query'
 import { lastErrorAtom } from '../states/errors'
-import { store } from './jotai'
+import { store } from '../states/jotai'
 
 export const queryClient = new QueryClient({
   defaultOptions: {

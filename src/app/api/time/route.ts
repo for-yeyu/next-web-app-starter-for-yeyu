@@ -1,4 +1,4 @@
-import { withResponse } from '@/lib/utils/next'
+import { withResponse } from '@/lib/http/next'
 
 export const runtime = 'edge'
 

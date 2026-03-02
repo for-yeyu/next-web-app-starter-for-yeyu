@@ -1,6 +1,6 @@
 import type { Options } from 'ky'
 import ky, { HTTPError, TimeoutError as KyTimeoutError } from 'ky'
-import { ApiRequestError, HttpRequestError, TimeoutError } from '../errors/request'
+import { ApiRequestError, HttpRequestError, TimeoutError } from '../common/errors/request'
 
 export type HttpRequestParams = Options & {
   url?: string

@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { BaseError } from '../errors/base'
+import { BaseError } from '../common/errors/base'
 
 type Handler<Args extends unknown[] = unknown[]> = (
   request: NextRequest,
