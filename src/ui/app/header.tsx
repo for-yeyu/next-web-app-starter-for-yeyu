@@ -2,7 +2,7 @@
 
 import type { ComponentProps, FC } from 'react'
 import Link from 'next/link'
-import { appName } from '@/configs/app'
+import { appName } from '@/configs/shared/app'
 import { cn } from '@/lib/utils/shadcn'
 import { SwitchTheme } from '../components/shared/switch-theme'
 

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import '@/styles/index.css'
-import { appName } from '@/configs/app'
+import { appName } from '@/configs/shared/app'
 import { fontsClassName } from '@/styles/fonts'
 import { Header } from '@/ui/app/header'
 import { Providers } from '@/ui/components/providers'
