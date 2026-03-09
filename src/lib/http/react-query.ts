@@ -1,6 +1,5 @@
 import { QueryCache, QueryClient } from '@tanstack/react-query'
-import { lastErrorAtom } from '../states/errors'
-import { store } from '../states/jotai'
+import { useErrorStore } from '../common/errors/error-store'
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -11,7 +10,8 @@ export const queryClient = new QueryClient({
   },
   queryCache: new QueryCache({
     onError: error => {
-      store.set(lastErrorAtom, error)
+      const nextError = error instanceof Error ? error : new Error(String(error))
+      useErrorStore.getState().setLastError(nextError)
     },
   }),
 })

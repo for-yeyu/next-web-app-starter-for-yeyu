@@ -1,16 +1,21 @@
 'use client'
 
 import type { FC } from 'react'
-import { useAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import { BaseError } from '@/lib/common/errors/base'
-import { lastErrorAtom } from '@/lib/states/errors'
+import { useErrorStore } from '@/lib/common/errors/error-store'
+import { initializeErrorStore } from '@/lib/runtime/init-error-store'
 
 export const ErrorHandler: FC = () => {
-  const [lastError, setLastError] = useAtom(lastErrorAtom)
+  const lastError = useErrorStore(state => state.lastError)
+  const setLastError = useErrorStore(state => state.setLastError)
 
   const recentMessages = useRef<Partial<Record<string, boolean>>>({})
+
+  useEffect(() => {
+    return initializeErrorStore()
+  }, [])
 
   useEffect(() => {
     if (lastError != null) {
