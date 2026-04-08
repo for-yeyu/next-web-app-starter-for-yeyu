@@ -1,14 +1,12 @@
 'use client'
 
+import type { FC } from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import { type FC, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/ui/shadcn/button'
 
-type ButtonProps = React.ComponentProps<typeof Button>
-
-// TODO: animation
-export const SwitchTheme: FC<ButtonProps> = props => {
+export const SwitchTheme: FC = () => {
   const { setTheme, theme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -18,7 +16,7 @@ export const SwitchTheme: FC<ButtonProps> = props => {
 
   if (!mounted) {
     return (
-      <Button size="icon" variant="ghost" className="cursor-pointer" {...props}>
+      <Button size="icon" variant="ghost">
         <Sun className="opacity-0" />
       </Button>
     )
@@ -26,11 +24,9 @@ export const SwitchTheme: FC<ButtonProps> = props => {
 
   return (
     <Button
-      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
       size="icon"
-      className="cursor-pointer"
-      variant={'ghost'}
-      {...props}
+      variant="ghost"
+      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
     >
       {theme === 'light' ? <Sun /> : <Moon />}
     </Button>

@@ -6,6 +6,7 @@
     "includes": [
       "**",
       "!.next",
+      "!refer",
       "!next-env.d.ts",
       "!postcss.config.mjs",
       "!public",

@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next Web App Starter
 
-## Getting Started
+A Next.js + React Query starter focused on clean layering:
 
-First, run the development server:
+- `app` is route entry only.
+- `ui` is page/component implementation.
+- `api` contains request functions.
+- `hooks` is the only client-facing API call layer.
+
+## Runtime Requirements
+
+- Node.js `>= 20`
+- pnpm `>= 9`
+
+## Common Commands
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
-# or
-bun dev
+pnpm build
+pnpm start
+pnpm lint
+pnpm typecheck
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Architecture Overview
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+src/
+  app/        # Next.js route entries (thin layer)
+  ui/         # UI implementation (pages + shared components)
+  api/        # Request functions by domain (query/mutation/types)
+  hooks/      # Hooks layer (React Query wrappers over src/api)
+  configs/    # Environment/config schemas and runtime config
+  lib/        # Infrastructure layer (errors/http/runtime/utils)
+  styles/     # Global style entry, shadcn base css, fonts
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Core Layering Rules
 
-## Learn More
+1. Client page components must not call network requests directly.
+2. Client pages/components call hooks in `src/hooks`.
+3. Hooks call request functions in `src/api`.
+4. `src/api` uses wrapped ky request helpers only:
+   - `apiRequest` for `src/app/api/**` endpoints
+   - `httpRequest` for non-`src/app/api/**` endpoints
+5. `src/app` should stay minimal and route-focused; page implementation lives in `src/ui/app`.
 
-To learn more about Next.js, take a look at the following resources:
+## Documentation Index
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- `src/app/README.md`: App Router entry-layer conventions
+- `src/ui/README.md`: UI structure and component organization
+- `src/api/README.md`: API request layer rules
+- `src/hooks/README.md`: Hook layer and React Query conventions
+- `src/configs/README.md`: Config schema/shared/server boundaries
+- `src/lib/README.md`: Infrastructure modules and change policy
+- `src/styles/README.md`: Style entry and CSS extension rules

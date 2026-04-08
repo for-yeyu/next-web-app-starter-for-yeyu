@@ -39,10 +39,8 @@ src/configs/
 Preferred imports:
 
 ```ts
-import { appName, appConfig } from '@/configs/shared/app'
-import { env } from '@/configs/shared/env'
-import { chains, supportedChainIds } from '@/configs/shared/chains'
-import { jwtSecretConfig } from '@/configs/server/jwt-secret'
+import { sharedConfig } from '@/configs/shared'
+import { serverConfig } from '@/configs/server'
 ```
 
 Schema imports inside `configs` modules should use the unified barrel:
@@ -58,7 +56,7 @@ import { appConfigSchema, envSchema, jwtSecretSchema } from '../schema'
 1. Add schema in `src/configs/schema/<name>.ts`.
 2. Export it from `src/configs/schema/index.ts`.
 3. Create runtime config in `src/configs/shared/<name>.ts` and parse `process.env`.
-4. Import it where needed via `@/configs/shared/<name>`.
+4. Consume it where needed via `sharedConfig` from `@/configs/shared`.
 
 Example:
 
@@ -87,7 +85,7 @@ export const featureConfig = featureSchema.parse({
 3. Create `src/configs/server/<name>.ts`.
 4. Add `import 'server-only'` at the top.
 5. Parse secret env vars there.
-6. Use only in server routes/actions/loaders.
+6. Use only in server routes/actions/loaders via `serverConfig` from `@/configs/server`.
 
 Example:
 
@@ -108,12 +106,12 @@ export const mySecretConfig = mySecretSchema.parse({
 3. Explicit boundaries: `shared` never depends on `server`.
 4. Security first: secrets stay in `server/` only.
 5. Small modules: one config topic per file.
-6. Stable API: export typed config objects and commonly used fields.
+6. Stable API: aggregate runtime config through `sharedConfig` and `serverConfig`.
 
 ## Checklist For PRs
 
 - New config has schema in `schema/`.
 - `schema/index.ts` is updated.
 - Secret config file includes `server-only`.
-- Import path uses `shared/*` or `server/*` explicitly.
+- Runtime config is consumed through `@/configs/shared` or `@/configs/server`.
 - `pnpm lint` and `pnpm typecheck` pass.

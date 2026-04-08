@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import '@/styles/index.css'
-import { appName } from '@/configs/shared/app'
+import { sharedConfig } from '@/configs/shared'
 import { fontsClassName } from '@/styles/fonts'
-import { Header } from '@/ui/app/header'
+import { Header } from '@/ui/app/layout/header'
 import { Providers } from '@/ui/components/providers'
 
 export const metadata: Metadata = {
-  title: appName,
+  title: sharedConfig.appName,
 }
 
 export default function Layout({ children }: { children: ReactNode }) {
