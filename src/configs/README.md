@@ -1,117 +1,92 @@
 # Configs Guide
 
-This directory contains runtime configuration for the app.
+This directory contains the runtime environment config entry points.
 
 Goals:
-- Keep environment validation strict and centralized.
-- Separate public/shared config from server-only secrets.
-- Make imports explicit and predictable.
+- Keep client-safe values separate from server-only secrets.
+- Keep zod out of application runtime imports.
+- Validate env values before the app is bundled.
 
 ## Directory Layout
 
 ```text
 src/configs/
-  schema/   # Zod schemas and config types
-  shared/   # Non-secret config that can be used by both client and server
-  server/   # Server-only config (secrets)
+  validator/
+    validate-public-env.ts   # zod validation for public env
+    validate-server-env.ts   # zod validation for server env
+  client-env.ts   # NEXT_PUBLIC_* and other client-safe env values
+  server-env.ts   # server-only env values and secrets
 ```
 
-## Responsibilities
+## Validation
 
-### `schema/`
-- Define only schema and types.
-- Do not read `process.env` here.
-- Use `schema/index.ts` as the unified export entry.
+Zod env validation lives in `src/configs/validator/validate-public-env.ts` and `src/configs/validator/validate-server-env.ts`.
 
-### `shared/`
-- Read `NEXT_PUBLIC_*` (or other non-secret) env vars.
-- Validate values with schemas from `../schema`.
-- Can be imported by client and server code.
-- Must not contain secrets or server-only values.
+`next.config.ts` should only call `validatePublicEnv()` and `validateServerEnv()`. Do not define schemas inline there.
 
-### `server/`
-- Read secret env vars.
-- Must include `import 'server-only'`.
-- Must never be imported by client components.
+Do not import `zod` from `src/configs/client-env.ts` or `src/configs/server-env.ts`. Those env modules should only expose already-validated values from `process.env` with narrow TypeScript types.
 
 ## Import Rules
 
-Preferred imports:
+Client-safe values:
 
 ```ts
-import { sharedConfig } from '@/configs/shared'
-import { serverConfig } from '@/configs/server'
+import { clientEnv } from '@/configs/client-env'
 ```
 
-Schema imports inside `configs` modules should use the unified barrel:
+Server-only values:
 
 ```ts
-import { appConfigSchema, envSchema, jwtSecretSchema } from '../schema'
+import { serverEnv } from '@/configs/server-env'
 ```
 
-## How To Add A New Config
+`server-env.ts` must include `import 'server-only'` and must never be imported by client components.
 
-### Add a shared config (client + server safe)
+## How To Add Env Values
 
-1. Add schema in `src/configs/schema/<name>.ts`.
-2. Export it from `src/configs/schema/index.ts`.
-3. Create runtime config in `src/configs/shared/<name>.ts` and parse `process.env`.
-4. Consume it where needed via `sharedConfig` from `@/configs/shared`.
+1. Add the value to the matching zod schema in `src/configs/validator/validate-public-env.ts` or `src/configs/validator/validate-server-env.ts`.
+2. Add the typed value to `clientEnv` or `serverEnv`.
+3. Consume values through `@/configs/client-env` or `@/configs/server-env`.
 
-Example:
+Shared public example:
 
 ```ts
-// schema/feature.ts
-import { z } from 'zod'
-
-export const featureSchema = z.object({
-  featureFlag: z.enum(['on', 'off']),
+// src/configs/validator/validate-public-env.ts
+const publicEnvSchema = z.object({
+  NEXT_PUBLIC_FEATURE_FLAG: z.enum(['on', 'off']),
 })
 ```
 
 ```ts
-// shared/feature.ts
-import { featureSchema } from '../schema'
+// src/configs/client-env.ts
+export const clientEnv = {
+  featureFlag: process.env.NEXT_PUBLIC_FEATURE_FLAG as 'on' | 'off',
+}
+```
 
-export const featureConfig = featureSchema.parse({
-  featureFlag: process.env.NEXT_PUBLIC_FEATURE_FLAG,
+Server-only example:
+
+```ts
+// src/configs/validator/validate-server-env.ts
+const serverEnvSchema = z.object({
+  API_SECRET: z.string().trim().min(1, 'API_SECRET is required'),
 })
 ```
 
-### Add a server-only config (secret)
-
-1. Add schema in `src/configs/schema/<name>.ts`.
-2. Export it from `src/configs/schema/index.ts`.
-3. Create `src/configs/server/<name>.ts`.
-4. Add `import 'server-only'` at the top.
-5. Parse secret env vars there.
-6. Use only in server routes/actions/loaders via `serverConfig` from `@/configs/server`.
-
-Example:
-
 ```ts
-// server/my-secret.ts
+// src/configs/server-env.ts
 import 'server-only'
-import { mySecretSchema } from '../schema'
 
-export const mySecretConfig = mySecretSchema.parse({
-  mySecret: process.env.MY_SECRET,
-})
+export const serverEnv = {
+  apiSecret: process.env.API_SECRET as string,
+}
 ```
-
-## Design Principles
-
-1. Fail fast: parse config at module load, not lazily.
-2. Single source of truth: one schema per config domain.
-3. Explicit boundaries: `shared` never depends on `server`.
-4. Security first: secrets stay in `server/` only.
-5. Small modules: one config topic per file.
-6. Stable API: aggregate runtime config through `sharedConfig` and `serverConfig`.
 
 ## Checklist For PRs
 
-- New config has schema in `schema/`.
-- `schema/index.ts` is updated.
-- Secret config file includes `server-only`.
-- Runtime config is consumed through `@/configs/shared` or `@/configs/server`.
-- `pnpm lint` and `pnpm typecheck` pass.
+- Zod validation stays in `src/configs/validator/validate-*.ts`.
+- `next.config.ts` only calls env validation functions.
+- `client-env.ts` and `server-env.ts` do not import `zod`.
+- Client-safe values are exported from `clientEnv`.
+- Secrets are exported from `serverEnv`.
+- Client components never import `serverEnv`.

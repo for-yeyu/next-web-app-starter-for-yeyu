@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import Link from 'next/link'
-import { sharedConfig } from '@/configs/shared'
+import { clientEnv } from '@/configs/client-env'
 import { ServerConfig } from './server-config'
 
 export const HomePage: FC = () => {
@@ -8,8 +8,8 @@ export const HomePage: FC = () => {
     <div className="container space-y-6">
       <div className="space-y-2">
         <h1 className="font-semibold text-3xl tracking-tight">Home</h1>
-        <div>Environment: {sharedConfig.env.environment}</div>
-        <div>App Name: {sharedConfig.appConfig.appName}</div>
+        <div>Environment: {clientEnv.environment}</div>
+        <div>App Name: {clientEnv.appName}</div>
       </div>
 
       <ServerConfig />
