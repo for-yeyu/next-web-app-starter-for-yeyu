@@ -13,7 +13,7 @@ export const Header: FC = () => {
           {clientEnv.appName}
         </Link>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-4">
           <SwitchTheme />
         </div>
       </div>

@@ -14,7 +14,7 @@ export const HomePage: FC = () => {
 
       <ServerConfig />
 
-      <div className="flex flex-col space-y-2">
+      <div className="flex flex-col gap-2">
         <Link className="text-primary hover:underline" href="/examples/server-time">
           Example: Server Time
         </Link>
