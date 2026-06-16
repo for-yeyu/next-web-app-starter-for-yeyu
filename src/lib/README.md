@@ -22,6 +22,8 @@ src/lib/
 
 By default, only `utils/` should be modified in normal feature work.
 
+Do not modify `src/lib/utils/shadcn/**`; treat it as shadcn support code.
+
 For other directories (`common/`, `http/`, `runtime/`):
 - Treat them as foundational infrastructure.
 - Do not modify unless there is a clear new business requirement that must change global behavior.
@@ -33,10 +35,13 @@ For other directories (`common/`, `http/`, `runtime/`):
 2. Next.js route handlers should use `withResponse` for consistent success/error payloads.
 3. Client API state should use the shared `queryClient` from `@/lib/http/react-query`.
 4. Shared errors should prefer extending `BaseError` for consistent handling and transport.
+5. Utilities should avoid `index.ts` barrel exports. Existing `index.ts` files that contain real implementation code are not barrel exports.
 
 ## Checklist For PRs
 
 - Change is in `utils/` unless justified by a new infra-level requirement.
+- `src/lib/utils/shadcn/**` is unchanged.
 - Request logic uses `httpRequest` / `apiRequest`, not ad-hoc transport code.
 - Route handlers use `withResponse` for response consistency.
 - Shared errors use `BaseError` hierarchy when appropriate.
+- No utility barrel exports are introduced.

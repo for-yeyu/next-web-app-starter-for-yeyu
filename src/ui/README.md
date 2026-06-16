@@ -36,4 +36,4 @@ src/ui/app/examples/server-time/index.tsx
 - `src/app` and `src/ui/app` paths stay mirrored.
 - Child component filenames follow kebab-case.
 - Shared or global concerns are placed in `components/providers` or `components/shared`.
-- `shadcn` files are changed only when there is a clear reason.
+- `src/ui/shadcn/**` and `src/lib/utils/shadcn/**` files are not modified.

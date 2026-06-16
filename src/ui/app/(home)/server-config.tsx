@@ -1,7 +1,7 @@
 'use client'
 
 import type { FC } from 'react'
-import { useServerConfigs } from '@/hooks/api/configs'
+import { useServerConfigs } from '@/hooks/api/configs/query/use-server-configs'
 import { Button } from '@/ui/shadcn/button'
 
 export const ServerConfig: FC = () => {

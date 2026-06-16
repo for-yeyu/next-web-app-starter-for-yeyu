@@ -100,13 +100,27 @@ src/ui/app/<route>/index.tsx`,
   ),
 )
 
-await updateFile(rootPath('src/hooks/README.md'), content =>
+await updateFile(rootPath('src/api/README.md'), content =>
   content.replace(
-    `src/api/time/query/get-server-time.ts
-src/hooks/api/time/query/use-server-time.ts`,
-    `src/api/<domain>/query/get-resource.ts
-src/hooks/api/<domain>/query/use-resource.ts`,
+    `import { getServerTime } from '@/api/time/query/get-server-time'
+import type { GetServerTimeResult } from '@/api/time/types/get-server-time-result'`,
+    `import { getResource } from '@/api/<domain>/query/get-resource'
+import type { GetResourceResult } from '@/api/<domain>/types/get-resource-result'`,
   ),
+)
+
+await updateFile(rootPath('src/hooks/README.md'), content =>
+  content
+    .replace(
+      `src/api/time/query/get-server-time.ts
+src/hooks/api/time/query/use-server-time.ts`,
+      `src/api/<domain>/query/get-resource.ts
+src/hooks/api/<domain>/query/use-resource.ts`,
+    )
+    .replace(
+      "import { useServerTime } from '@/hooks/api/time/query/use-server-time'",
+      "import { useResource } from '@/hooks/api/<domain>/query/use-resource'",
+    ),
 )
 
 await updateFile(rootPath('src/configs/README.md'), content =>

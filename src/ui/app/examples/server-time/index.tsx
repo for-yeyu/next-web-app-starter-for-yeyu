@@ -2,8 +2,8 @@
 
 import type { FC } from 'react'
 import Link from 'next/link'
-import { useServerTime } from '@/hooks/api/time'
-import { formatTime } from '@/lib/utils/formatter'
+import { useServerTime } from '@/hooks/api/time/query/use-server-time'
+import { formatTime } from '@/lib/utils/formatter/formatters'
 import { Button } from '@/ui/shadcn/button'
 
 export const ServerTimePage: FC = () => {

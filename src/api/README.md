@@ -6,7 +6,7 @@ Goals:
 - Keep network request logic centralized in `src/api`.
 - Separate read/write behavior with `query` and `mutation`.
 - Keep request and response contracts explicit in `types`.
-- Re-export each domain through `index.ts` for predictable imports.
+- Import request functions and contracts from concrete files.
 
 ## Directory Layout
 
@@ -15,8 +15,18 @@ src/api/
   <domain>/
     mutation/              # Write/update requests and side-effect actions
     query/                 # Read/fetch requests
-    types/                 # API params and response types
-    index.ts               # Domain barrel export
+    types/                 # API params and response types in named files
+```
+
+## Import Rules
+
+Do not create or use `index.ts` barrel exports in `src/api`.
+
+Use concrete file imports:
+
+```ts
+import { getServerTime } from '@/api/time/query/get-server-time'
+import type { GetServerTimeResult } from '@/api/time/types/get-server-time-result'
 ```
 
 ## Request Rules
@@ -39,8 +49,8 @@ Allowed flow:
 ## Checklist For PRs
 
 - API functions are placed in `query` or `mutation` correctly.
-- Shared contracts are defined in `types`.
-- Domain and subfolders expose `index.ts` as needed.
+- Shared contracts are defined in named files under `types`.
+- Imports point to concrete files instead of folder-level `index.ts` barrels.
 - `src/app/api/**` endpoints use `apiRequest`.
 - Non-`src/app/api/**` endpoints use `httpRequest`.
 - Client components consume API through hooks, not direct requests.
