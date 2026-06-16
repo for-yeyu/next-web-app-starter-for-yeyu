@@ -22,7 +22,7 @@ export abstract class BaseError extends Error {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let current: Error | null = this
     while (current instanceof Error) {
-      if ((fn != null && fn(current)) || (fn == null && !(current.cause instanceof Error))) {
+      if (fn?.(current) || (fn == null && !(current.cause instanceof Error))) {
         return current
       }
       current = current.cause instanceof Error ? current.cause : null
