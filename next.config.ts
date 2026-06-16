@@ -5,6 +5,11 @@ import { validateServerEnv } from './src/configs/validator/validate-server-env'
 validatePublicEnv()
 validateServerEnv()
 
-const config: NextConfig = {}
+const config: NextConfig = {
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
+  typedRoutes: true,
+}
 
 export default config
