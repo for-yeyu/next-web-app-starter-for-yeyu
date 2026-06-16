@@ -31,3 +31,7 @@ pnpm-debug.log*
 
 # for AI
 refer
+
+# fuck pnpm
+.pnpm
+.pnpm-store

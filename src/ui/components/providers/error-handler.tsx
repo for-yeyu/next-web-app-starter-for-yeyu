@@ -18,20 +18,20 @@ function clearTimeouts(timeoutIds: Set<number>) {
 function scheduleMessageRelease(
   message: string,
   recentMessages: MutableRefObject<Partial<Record<string, boolean>>>,
-  timeoutIds: MutableRefObject<Set<number>>,
+  timeoutIds: Set<number>,
 ) {
   const timeoutId = window.setTimeout(() => {
-    timeoutIds.current.delete(timeoutId)
+    timeoutIds.delete(timeoutId)
     delete recentMessages.current[message]
   }, 1000)
 
-  timeoutIds.current.add(timeoutId)
+  timeoutIds.add(timeoutId)
 }
 
 function reportError(
   error: Error,
   recentMessages: MutableRefObject<Partial<Record<string, boolean>>>,
-  timeoutIds: MutableRefObject<Set<number>>,
+  timeoutIds: Set<number>,
 ) {
   if (error instanceof BaseError) {
     if (!error.handled) {
@@ -60,7 +60,7 @@ function reportError(
 
 function initializeErrorHandler(
   recentMessages: MutableRefObject<Partial<Record<string, boolean>>>,
-  timeoutIds: MutableRefObject<Set<number>>,
+  timeoutIds: Set<number>,
 ) {
   const cleanupErrorStore = initializeErrorStore()
   const unsubscribe = useErrorStore.subscribe(state => {
@@ -77,17 +77,21 @@ function initializeErrorHandler(
   return () => {
     unsubscribe()
     cleanupErrorStore()
-    clearTimeouts(timeoutIds.current)
+    clearTimeouts(timeoutIds)
     recentMessages.current = {}
   }
 }
 
 export const ErrorHandler: FC = () => {
   const recentMessages = useRef<Partial<Record<string, boolean>>>({})
-  const timeoutIds = useRef<Set<number>>(new Set())
+  const timeoutIds = useRef<Set<number> | null>(null)
 
   useEffect(() => {
-    return initializeErrorHandler(recentMessages, timeoutIds)
+    if (timeoutIds.current === null) {
+      timeoutIds.current = new Set()
+    }
+
+    return initializeErrorHandler(recentMessages, timeoutIds.current)
   }, [])
 
   return null
