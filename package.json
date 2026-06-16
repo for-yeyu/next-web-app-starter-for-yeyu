@@ -12,6 +12,7 @@
     "lint:react-doctor": "pnpm dlx react-doctor@latest -y",
     "lint:d": "pnpm dlx react-doctor@latest -y",
     "lint:dv": "pnpm dlx react-doctor@latest --verbose",
+    "remove:examples": "node scripts/remove-examples.mjs",
     "prepare": "lefthook install",
     "commit": "czg",
     "qwer": "czg",
