@@ -37,6 +37,22 @@ For other directories (`common/`, `http/`, `runtime/`):
 4. Shared errors should prefer extending `BaseError` for consistent handling and transport.
 5. Utilities should avoid `index.ts` barrel exports. Existing `index.ts` files that contain real implementation code are not barrel exports.
 
+## Testing
+
+Test infrastructure and pure utility behavior without a browser environment. Keep the test beside
+the source module:
+
+```text
+src/lib/utils/formatter/
+  formatters.ts
+  test/
+    formatters.test.ts
+```
+
+Prioritize observable behavior for formatters, error classes, HTTP wrappers, and response helpers.
+Mock network transport at `ky` or the project request-wrapper boundary. Keep foundational
+infrastructure tests focused and avoid coupling them to internal local variables.
+
 ## Checklist For PRs
 
 - Change is in `utils/` unless justified by a new infra-level requirement.
@@ -45,3 +61,5 @@ For other directories (`common/`, `http/`, `runtime/`):
 - Route handlers use `withResponse` for response consistency.
 - Shared errors use `BaseError` hierarchy when appropriate.
 - No utility barrel exports are introduced.
+- Non-trivial utility and infrastructure behavior has a colocated `.test.ts` file when coverage is
+  needed.

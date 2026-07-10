@@ -31,6 +31,21 @@ src/app/
 - Own most styles, layout details, and view logic.
 - Mirror route structure from `src/app` for fast lookup.
 
+## API Route Testing
+
+API route handlers are tested as functions and do not require page rendering:
+
+```text
+src/app/api/time/
+  route.ts
+  test/
+    route.test.ts
+```
+
+Cover successful responses, known `BaseError` responses, and unexpected error responses through the
+handler's public response contract. Keep route tests focused on handler behavior and leave shared
+serialization details to tests for `src/lib/http/next.ts`.
+
 ## Checklist For PRs
 
 - New route has both `src/app/**` entry and `src/ui/app/**` UI file.
@@ -38,3 +53,4 @@ src/app/
 - Route entry returns a route-named UI component.
 - Non-static page styles are not added in `src/app/**`.
 - Imports use mirrored path under `@/ui/app/...` when applicable.
+- API route tests are colocated under the matching route directory's `test/` folder.

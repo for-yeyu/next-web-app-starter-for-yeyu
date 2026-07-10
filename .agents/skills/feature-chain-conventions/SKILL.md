@@ -46,6 +46,8 @@ src/app/<route>/page.tsx
 - Shared utility, error, HTTP, or runtime changes: use `lib-infrastructure-conventions`.
 - Global CSS or fonts: use `styles-conventions`.
 - Code shape, naming, className extraction, local type decisions, component props boundaries, hook shape, app store decisions, dependency changes, scripts, and commit-message requests: use `project-workflow-conventions`.
+- Function and API tests: use `testing-conventions`; also load the source layer skill when the
+  tested module belongs to `src/api`, `src/app`, `src/configs`, or `src/lib`.
 
 ## Workflow
 

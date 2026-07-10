@@ -46,6 +46,28 @@ Allowed flow:
 2. Hook calls function from `src/api`.
 3. API function performs request through `apiRequest` or `httpRequest`.
 
+## Testing
+
+API request functions are tested without rendering UI or starting a server.
+
+Place the test next to the request function:
+
+```text
+src/api/time/query/
+  get-server-time.ts
+  test/
+    get-server-time.test.ts
+```
+
+Test the request function's public behavior:
+
+- the wrapped transport helper and request URL;
+- the returned response value;
+- error propagation and conversion at the API boundary.
+
+Mock `apiRequest` or `httpRequest` at the transport boundary. Do not mock the request function
+itself or duplicate the implementation inside the test.
+
 ## Checklist For PRs
 
 - API functions are placed in `query` or `mutation` correctly.
@@ -54,3 +76,4 @@ Allowed flow:
 - `src/app/api/**` endpoints use `apiRequest`.
 - Non-`src/app/api/**` endpoints use `httpRequest`.
 - Client components consume API through hooks, not direct requests.
+- API tests are colocated in a nested `test/` directory and use matching `.test.ts` filenames.
