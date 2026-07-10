@@ -91,6 +91,23 @@ await updateFile(rootPath('src/app/README.md'), content =>
   content.replace('  examples/               # Route entries for examples\n', ''),
 )
 
+await updateFile(rootPath('README.md'), content =>
+  content.replace(
+    `  api/
+    time/
+      query/
+        get-server-time.ts
+        test/
+          get-server-time.test.ts`,
+    `  api/
+    <domain>/
+      query/
+        get-resource.ts
+        test/
+          get-resource.test.ts`,
+  ),
+)
+
 await updateFile(rootPath('src/ui/README.md'), content =>
   content.replace(
     `src/app/examples/server-time/page.tsx
@@ -101,12 +118,23 @@ src/ui/app/<route>/index.tsx`,
 )
 
 await updateFile(rootPath('src/api/README.md'), content =>
-  content.replace(
-    `import { getServerTime } from '@/api/time/query/get-server-time'
+  content
+    .replace(
+      `import { getServerTime } from '@/api/time/query/get-server-time'
 import type { GetServerTimeResult } from '@/api/time/types/get-server-time-result'`,
-    `import { getResource } from '@/api/<domain>/query/get-resource'
+      `import { getResource } from '@/api/<domain>/query/get-resource'
 import type { GetResourceResult } from '@/api/<domain>/types/get-resource-result'`,
-  ),
+    )
+    .replace(
+      `src/api/time/query/
+  get-server-time.ts
+  test/
+    get-server-time.test.ts`,
+      `src/api/<domain>/query/
+  get-resource.ts
+  test/
+    get-resource.test.ts`,
+    ),
 )
 
 await updateFile(rootPath('src/hooks/README.md'), content =>
@@ -130,17 +158,55 @@ await updateFile(rootPath('src/configs/README.md'), content =>
   ),
 )
 
-await Promise.all(
-  [
-    'src/app/examples',
-    'src/ui/app/examples',
-    'src/app/api/time',
-    'src/api/time',
-    'src/hooks/api/time',
-    'src/lib/utils/formatter',
-    'src/app/api/configs',
-    'src/api/configs',
-    'src/hooks/api/configs',
-    'src/ui/app/(home)/server-config.tsx',
-  ].map(path => removePath(rootPath(path))),
+await updateFile(rootPath('src/app/README.md'), content =>
+  content.replace(
+    `src/app/api/time/
+  route.ts
+  test/
+    route.test.ts`,
+    `src/app/api/<domain>/<resource>/
+  route.ts
+  test/
+    route.test.ts`,
+  ),
 )
+
+await updateFile(rootPath('src/lib/README.md'), content =>
+  content.replace(
+    `src/lib/utils/formatter/
+  formatters.ts
+  test/
+    formatters.test.ts`,
+    `src/lib/utils/<utility>/
+  <utility>.ts
+  test/
+    <utility>.test.ts`,
+  ),
+)
+
+// Clear generated route types after removing App Router examples.
+await removePath(rootPath('.next'))
+
+const examplePathsToRemove = [
+  'src/app/examples/server-time/page.tsx',
+  'src/ui/app/examples/server-time/index.tsx',
+  'src/app/api/time/route.ts',
+  'src/app/api/time/test/route.test.ts',
+  'src/api/time/query/get-server-time.ts',
+  'src/api/time/query/test/get-server-time.test.ts',
+  'src/api/time/types/get-server-time-result.ts',
+  'src/hooks/api/time/query/use-server-time.ts',
+  'src/lib/utils/formatter/formatters.ts',
+  'src/lib/utils/formatter/test/formatters.test.ts',
+  'src/app/api/configs/server/route.ts',
+  'src/app/api/configs/server/test/route.test.ts',
+  'src/api/configs/query/get-server-configs.ts',
+  'src/api/configs/query/test/get-server-configs.test.ts',
+  'src/api/configs/types/get-server-config-result.ts',
+  'src/hooks/api/configs/query/use-server-configs.ts',
+  'src/ui/app/(home)/server-config.tsx',
+  'src/configs/test/server-env.test.ts',
+  'src/configs/validator/test/validate-server-env.test.ts',
+]
+
+await Promise.all(examplePathsToRemove.map(path => removePath(rootPath(path))))

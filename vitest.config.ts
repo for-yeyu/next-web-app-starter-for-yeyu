@@ -17,7 +17,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       include: ['src/api/**/*.ts', 'src/configs/**/*.ts', 'src/lib/**/*.ts', 'src/app/api/**/*.ts'],
-      exclude: ['src/**/test/**', 'src/**/*.d.ts', 'src/lib/utils/shadcn/**'],
+      exclude: ['src/**/test/**', 'src/**/types/**', 'src/**/*.d.ts', 'src/lib/utils/shadcn/**'],
     },
   },
 })
