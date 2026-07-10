@@ -14,6 +14,8 @@ A Next.js + React Query starter focused on clean layering:
 
 ## Common Commands
 
+For local maintainers:
+
 ```bash
 pnpm dev
 pnpm build
@@ -21,6 +23,8 @@ pnpm start
 pnpm lint
 pnpm typecheck
 ```
+
+Agents should follow `AGENTS.md` command restrictions instead of running project scripts directly.
 
 ## Architecture Overview
 
@@ -47,6 +51,8 @@ src/
 
 ## Documentation Index
 
+- `AGENTS.md`: Agent-specific command, code style, and workflow instructions
+- `.agents/skills/*/SKILL.md`: Modular agent conventions for project layers
 - `src/app/README.md`: App Router entry-layer conventions
 - `src/ui/README.md`: UI structure and component organization
 - `src/api/README.md`: API request layer rules
