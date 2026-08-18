@@ -6,7 +6,9 @@ validatePublicEnv()
 validateServerEnv()
 
 const config: NextConfig = {
+  reactCompiler: true,
   experimental: {
+    turbopackRustReactCompiler: true,
     optimizePackageImports: ['lucide-react'],
   },
   typedRoutes: true,
