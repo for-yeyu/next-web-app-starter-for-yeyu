@@ -26,9 +26,13 @@ src/ui/
 Keep directory names aligned between route entries and page implementations.
 
 ```text
-src/app/examples/server-time/page.tsx
-src/ui/app/examples/server-time/index.tsx
+src/app/(home)/page.tsx
+src/ui/app/(home)/index.tsx
 ```
+
+The home page is a minimal starting point. Example pages are not included;
+[Request Chain Example](../../README.md#request-chain-example) shows how to add a page that reads
+server data without changing the default application.
 
 ## Checklist For PRs
 

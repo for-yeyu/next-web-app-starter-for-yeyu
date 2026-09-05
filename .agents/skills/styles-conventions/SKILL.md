@@ -12,7 +12,7 @@ Applies to `src/styles/**`.
 ## Hard Rules
 
 1. Do not manually modify `src/styles/shadcn.css`.
-2. Configure fonts through `src/styles/fonts.ts`.
+2. Configure and export project font setup through `src/styles/fonts.ts`.
 3. For custom CSS, create a new `.css` file in `src/styles`.
 4. Import custom style files from `src/styles/index.css`.
 
@@ -35,7 +35,3 @@ Example:
 - Font changes are in `fonts.ts`.
 - New CSS is added in a dedicated file.
 - New CSS file is imported by `index.css`.
-
-## References
-
-- `src/styles/README.md`

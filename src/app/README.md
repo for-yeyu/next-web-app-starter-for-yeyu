@@ -12,8 +12,7 @@ Goals:
 ```text
 src/app/
   (home)/                 # Route group entries
-  examples/               # Route entries for examples
-  api/                    # Route handlers
+  api/                    # Add route handlers when needed; none are included by default
   layout.tsx              # Root layout entry
   error.tsx               # Error boundary entry
   not-found.tsx           # Not-found entry
@@ -33,7 +32,9 @@ src/app/
 
 ## API Route Testing
 
-API route handlers are tested as functions and do not require page rendering:
+The template ships no API endpoints. See
+[Request Chain Example](../../README.md#request-chain-example) for a documentation-only example.
+When adding a handler, test it as a function without page rendering:
 
 ```text
 src/app/api/time/

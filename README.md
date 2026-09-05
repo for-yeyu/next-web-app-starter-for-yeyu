@@ -7,6 +7,23 @@ A Next.js + React Query starter focused on clean layering:
 - `api` contains request functions.
 - `hooks` is the only client-facing API call layer.
 
+## Template Scope
+
+The default template is a minimal application shell, not a demo application. It includes the
+shared providers, request/response wrappers, error handling, environment validation, and their
+infrastructure tests. It does not ship example pages, API endpoints, or business-domain hooks.
+There is no example-cleanup step or script.
+
+Create domain folders only when adding a real feature. The request and hook layers initially
+contain documentation only. Code snippets in the guides and agent skills are reference examples,
+not routes or modules included in the application.
+
+See [Request Chain Example](#request-chain-example) for one complete, documentation-only request chain.
+
+The tracked `.env.development` and `.env.production` files contain client-safe starter values.
+Keep real server secrets in ignored local env files or deployment configuration. The server env
+entry and validator start empty; extend both when the application needs private configuration.
+
 ## Runtime Requirements
 
 - Node.js `>= 20`
@@ -43,12 +60,11 @@ src/
       validate-server-env.ts
       test/
         validate-server-env.test.ts
-  api/
-    time/
-      query/
-        get-server-time.ts
-        test/
-          get-server-time.test.ts
+  lib/
+    http/
+      next.ts
+      test/
+        next.test.ts
 ```
 
 Keep one test file focused on the matching source module. Use `pnpm test` for a one-time local or
@@ -76,6 +92,164 @@ src/
    - `apiRequest` for `src/app/api/**` endpoints
    - `httpRequest` for non-`src/app/api/**` endpoints
 5. `src/app` should stay minimal and route-focused; page implementation lives in `src/ui/app`.
+
+## Request Chain Example
+
+This is a documentation-only example. None of the files below are included in the default
+application. Use the pattern when adding a real feature; there is no demo route to remove first.
+
+The example reads a server timestamp through the project layers:
+
+```text
+src/app/examples/server-time/page.tsx
+  -> src/ui/app/examples/server-time/index.tsx
+  -> src/ui/app/examples/server-time/server-time-value.tsx
+  -> src/hooks/api/time/query/use-server-time.ts
+  -> src/api/time/query/get-server-time.ts
+  -> src/app/api/time/route.ts
+```
+
+### Shared Response Contract
+
+`src/api/time/types/get-server-time-result.ts`
+
+```ts
+export type GetServerTimeResult = {
+  timestamp: number
+}
+```
+
+### Server Route
+
+`src/app/api/time/route.ts`
+
+```ts
+import type { GetServerTimeResult } from '@/api/time/types/get-server-time-result'
+import { withResponse } from '@/lib/http/next'
+
+export const GET = withResponse((): GetServerTimeResult => {
+  return { timestamp: Date.now() }
+})
+```
+
+Return data directly and let `withResponse` serialize it and handle errors. Never return private
+environment values to demonstrate server configuration.
+
+### Request Function
+
+`src/api/time/query/get-server-time.ts`
+
+```ts
+import type { GetServerTimeResult } from '../types/get-server-time-result'
+import { apiRequest } from '@/lib/http/ky'
+
+export async function getServerTime(): Promise<GetServerTimeResult> {
+  return await apiRequest<GetServerTimeResult>({ url: 'time' })
+}
+```
+
+The relative URL targets `/api/time`. Keep transport handling in the shared request wrapper.
+
+### Query Hook
+
+`src/hooks/api/time/query/use-server-time.ts`
+
+```ts
+import { useQuery } from '@tanstack/react-query'
+import { getServerTime } from '@/api/time/query/get-server-time'
+
+export function useServerTime() {
+  return useQuery({
+    queryKey: ['time', 'server'],
+    queryFn: getServerTime,
+  })
+}
+```
+
+Keep the query key domain-first and let React Query own request state. The template already wires
+the shared query client through its providers.
+
+### Client Section
+
+`src/ui/app/examples/server-time/server-time-value.tsx`
+
+```tsx
+'use client'
+
+import type { FC } from 'react'
+import { useServerTime } from '@/hooks/api/time/query/use-server-time'
+import { Button } from '@/ui/shadcn/button'
+
+export const ServerTimeValue: FC = () => {
+  const serverTime = useServerTime()
+
+  if (serverTime.isPending) {
+    return <p>Loading server time...</p>
+  }
+
+  if (serverTime.isError) {
+    return <p role="alert">{serverTime.error.message}</p>
+  }
+
+  return (
+    <div className="space-y-2">
+      <p>Timestamp (ms): {serverTime.data.timestamp}</p>
+      <Button
+        type="button"
+        onClick={() => void serverTime.refetch()}
+        disabled={serverTime.isFetching}
+      >
+        Refresh
+      </Button>
+    </div>
+  )
+}
+```
+
+The component calls only the hook. Loading and error states stay explicit, with no replacement
+data or local error suppression.
+
+### Page Composition And Route Entry
+
+`src/ui/app/examples/server-time/index.tsx`
+
+```tsx
+import type { FC } from 'react'
+import { ServerTimeValue } from './server-time-value'
+
+export const ServerTimePage: FC = () => {
+  return (
+    <div className="container space-y-4">
+      <h1 className="font-semibold text-3xl tracking-tight">Server Time</h1>
+      <ServerTimeValue />
+    </div>
+  )
+}
+```
+
+`src/app/examples/server-time/page.tsx`
+
+```tsx
+import { ServerTimePage } from '@/ui/app/examples/server-time/index'
+
+export default function Page() {
+  return <ServerTimePage />
+}
+```
+
+Keep route entries thin and put interactive sections in focused client components.
+
+### Tests When Adding The Feature
+
+- Add request tests at `src/api/time/query/test/get-server-time.test.ts`, mock `apiRequest`, and
+  verify the request URL, returned value, and error propagation.
+- Add handler tests at `src/app/api/time/test/route.test.ts`, fix the clock, and verify the HTTP
+  status and response body without starting a server.
+- Keep shared transport and response tests in their infrastructure directories. Do not add page,
+  component, or browser tests under the current project test scope.
+
+See `src/api/README.md`, `src/app/README.md`, and `.agents/skills/testing-conventions/SKILL.md`
+for the testing conventions.
 
 ## Documentation Index
 

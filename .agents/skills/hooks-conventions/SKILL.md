@@ -9,6 +9,9 @@ description: Use when building src/hooks hooks, especially src/hooks/api React Q
 
 Applies to `src/hooks/**`.
 
+The base template includes no business hooks. Create matching API and hook domains only when a
+feature needs them; example paths in this skill do not imply existing source files.
+
 ## Structure Rules
 
 1. `src/hooks/api` mirrors `src/api` domains and subfolders.
@@ -21,6 +24,9 @@ Applies to `src/hooks/**`.
 ## Hard Boundary Rule
 
 Client components must call APIs through hooks only.
+
+Required flow: `Client Component -> src/hooks/api -> src/api -> apiRequest/httpRequest`.
+Hooks call concrete API request functions; transport helpers stay in the API layer.
 
 Not allowed:
 
@@ -59,10 +65,24 @@ Current base architecture does not provide non-API folder examples.
 7. Use `enabled` for user-triggered or dependency-gated queries.
 8. Mutations should invalidate or update affected query keys after success.
 
-Examples:
+Query hook example in `src/hooks/api/time/query/use-server-time.ts`, paired with
+`src/api/time/query/get-server-time.ts`:
 
 ```ts
-queryKey: ['time', 'server']
+import { useQuery } from '@tanstack/react-query'
+import { getServerTime } from '@/api/time/query/get-server-time'
+
+export function useServerTime() {
+  return useQuery({
+    queryKey: ['time', 'server'],
+    queryFn: getServerTime,
+  })
+}
+```
+
+For a parameterized query, include parameters in the final key segment:
+
+```ts
 queryKey: ['user', 'profile', { address }]
 ```
 
@@ -77,8 +97,3 @@ queryKey: ['user', 'profile', { address }]
 - Client code consumes hooks instead of direct request calls.
 - Non-API hooks (if added) are categorized clearly.
 - Hooks expose focused state/actions instead of large unrelated return objects.
-
-## References
-
-- `src/hooks/README.md`
-- `src/api/README.md`

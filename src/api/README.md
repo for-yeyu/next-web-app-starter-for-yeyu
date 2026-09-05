@@ -2,6 +2,9 @@
 
 This directory stores API request functions by domain.
 
+No business domains are included by default. The paths below are documentation examples from
+[Request Chain Example](../../README.md#request-chain-example); create the matching files only when adding a feature.
+
 Goals:
 - Keep network request logic centralized in `src/api`.
 - Separate read/write behavior with `query` and `mutation`.

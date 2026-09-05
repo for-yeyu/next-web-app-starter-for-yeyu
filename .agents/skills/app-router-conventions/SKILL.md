@@ -9,6 +9,9 @@ description: Use when creating or modifying src/app route entries, page/layout w
 
 Applies to `src/app/**`, including page route entries and `src/app/api/**/route.ts` handlers.
 
+The base template includes the home route and framework boundary files, but no API endpoints or
+example pages. Add route directories only when a feature needs them.
+
 ## Page Route Rules
 
 1. Keep `src/app` as a thin route-entry layer.
@@ -20,10 +23,10 @@ Applies to `src/app/**`, including page route entries and `src/app/api/**/route.
 Example:
 
 ```tsx
-import { ServerTimePage } from '@/ui/app/examples/server-time'
+import { HomePage } from '@/ui/app/(home)/index'
 
 export default function Page() {
-  return <ServerTimePage />
+  return <HomePage />
 }
 ```
 
@@ -32,8 +35,8 @@ export default function Page() {
 Keep route path and UI path aligned:
 
 ```text
-src/app/examples/server-time/page.tsx
-src/ui/app/examples/server-time/index.tsx
+src/app/(home)/page.tsx
+src/ui/app/(home)/index.tsx
 ```
 
 ## Route Handler Rules
@@ -47,6 +50,7 @@ Applies to `src/app/api/**/route.ts`.
 5. Server-only config must be read through `@/configs/server-env`.
 6. Do not put page UI, React hooks, or client component logic in route handlers.
 7. Do not call local `src/api` request functions from route handlers to reach the same app.
+8. Never return private configuration or secrets to clients.
 
 Prefer a small handler body:
 
@@ -61,6 +65,16 @@ export const GET = withResponse(() => {
 ```
 
 Add `export const runtime = 'edge'` only when the endpoint is compatible with and benefits from the Edge runtime.
+
+## Route Handler Testing
+
+- Use Vitest to test handlers as functions, without starting a server or rendering pages.
+- Place tests at `src/app/api/<domain>/<resource>/test/route.test.ts` beside the handler.
+- Import the concrete handler and mock its external dependencies, not the handler itself.
+- Assert HTTP status and response body for success and relevant error cases, including known
+  `BaseError` and unexpected failures.
+- Keep shared serialization tests in `src/lib/http/test/next.test.ts`; route tests focus on the
+  endpoint's own behavior.
 
 ## Workflow
 
@@ -78,8 +92,3 @@ Add `export const runtime = 'edge'` only when the endpoint is compatible with an
 - API handlers are wrapped with `withResponse`.
 - Server secrets stay behind `server-env`.
 - `src/app` <-> `src/ui/app` mapping remains one-to-one.
-
-## References
-
-- `src/app/README.md`
-- `src/ui/README.md`

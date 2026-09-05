@@ -36,6 +36,7 @@ For `src/lib/common/**`, `src/lib/http/**`, and `src/lib/runtime/**`:
 4. Runtime initialization should go through `runtime/*` initializers.
 5. App stores should use Zustand rather than React Context.
 6. Do not add `index.ts` barrel exports; import utilities from concrete files when the utility file is not an existing implementation entry.
+7. Client API state uses the shared `queryClient` from `@/lib/http/react-query`.
 
 ## Error Behavior
 
@@ -54,6 +55,15 @@ Add a shared error class only when multiple call sites need the same semantics o
 2. If infra core must change, document reason and verify behavior across API/hooks/ui.
 3. Add or update tests for non-trivial utility logic when the project includes test coverage.
 
+## Infrastructure Testing
+
+- Use Vitest without a browser environment for pure utilities, errors, HTTP wrappers, response
+  helpers, and runtime initialization.
+- Colocate tests in a nested `test/` directory using the source basename plus `.test.ts`; for
+  example, `src/lib/http/next.ts` maps to `src/lib/http/test/next.test.ts`.
+- Mock network transport at `ky` or the project request-wrapper boundary, not the behavior under test.
+- Assert observable outputs, errors, and response contracts rather than internal local variables.
+
 ## Review Checklist
 
 - Edit location respects modification policy.
@@ -63,8 +73,3 @@ Add a shared error class only when multiple call sites need the same semantics o
 - Errors are not swallowed or converted into successful data.
 - Utility changes include tests when regression risk exists.
 - No utility barrel exports were added.
-
-## References
-
-- `src/lib/README.md`
-- `src/api/README.md`

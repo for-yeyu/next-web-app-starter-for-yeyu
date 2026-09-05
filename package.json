@@ -15,7 +15,6 @@
     "lint:react-doctor": "pnpm dlx react-doctor@latest -y",
     "doctor": "pnpm dlx react-doctor@latest",
     "knip": "knip",
-    "cleanup": "node scripts/remove-examples.mjs",
     "prepare": "lefthook install",
     "commit": "czg",
     "qwer": "czg"
@@ -31,7 +30,6 @@
     "ky": "^2.1.0",
     "lucide-react": "^1.41.0",
     "next": "16.3.4",
-    "next-themes": "^0.4.6",
     "postcss": "^8.5.28",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

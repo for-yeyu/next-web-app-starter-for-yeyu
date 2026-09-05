@@ -43,10 +43,10 @@ Test infrastructure and pure utility behavior without a browser environment. Kee
 the source module:
 
 ```text
-src/lib/utils/formatter/
-  formatters.ts
+src/lib/http/
+  next.ts
   test/
-    formatters.test.ts
+    next.test.ts
 ```
 
 Prioritize observable behavior for formatters, error classes, HTTP wrappers, and response helpers.

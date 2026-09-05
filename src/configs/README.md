@@ -42,39 +42,43 @@ import { serverEnv } from '@/configs/server-env'
 
 `server-env.ts` must include `import 'server-only'` and must never be imported by client components.
 
+The starter exports an empty `serverEnv` and validates an empty server schema. No private env
+variables are required until a feature needs them. Keep both entry points as extension points.
+Never return server secrets from an API handler or pass them to client components.
+
+The tracked `.env.development` and `.env.production` files contain only client-safe starter values.
+Store real secrets in ignored `.env.local` files or deployment configuration, not tracked files.
+
 ## How To Add Env Values
 
-1. Add the value to the matching zod schema in `src/configs/validator/validate-public-env.ts` or `src/configs/validator/validate-server-env.ts`.
+1. Add the value to the matching zod schema and its `parse` input in `src/configs/validator/validate-public-env.ts` or `src/configs/validator/validate-server-env.ts`.
 2. Add the typed value to `clientEnv` or `serverEnv`.
 3. Consume values through `@/configs/client-env` or `@/configs/server-env`.
 
-Shared public example:
+For public values, follow the existing `NEXT_PUBLIC_APP_NAME` field and preserve the other
+configured fields. Only use `NEXT_PUBLIC_*` for values that may be exposed to the browser.
+
+Server-only example (documentation only; no secret is required by the starter):
+
+`src/configs/validator/validate-server-env.ts`
 
 ```ts
-// src/configs/validator/validate-public-env.ts
-const publicEnvSchema = z.object({
-  NEXT_PUBLIC_FEATURE_FLAG: z.enum(['on', 'off']),
-})
-```
+import { z } from 'zod'
 
-```ts
-// src/configs/client-env.ts
-export const clientEnv = {
-  featureFlag: process.env.NEXT_PUBLIC_FEATURE_FLAG as 'on' | 'off',
-}
-```
-
-Server-only example:
-
-```ts
-// src/configs/validator/validate-server-env.ts
 const serverEnvSchema = z.object({
   API_SECRET: z.string().trim().min(1, 'API_SECRET is required'),
 })
+
+export const validateServerEnv = () => {
+  serverEnvSchema.parse({
+    API_SECRET: process.env.API_SECRET,
+  })
+}
 ```
 
+`src/configs/server-env.ts`
+
 ```ts
-// src/configs/server-env.ts
 import 'server-only'
 
 export const serverEnv = {

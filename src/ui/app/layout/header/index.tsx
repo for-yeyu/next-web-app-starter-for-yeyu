@@ -3,7 +3,6 @@
 import type { FC } from 'react'
 import Link from 'next/link'
 import { clientEnv } from '@/configs/client-env'
-import { SwitchTheme } from './switch-theme'
 
 export const Header: FC = () => {
   return (
@@ -12,10 +11,6 @@ export const Header: FC = () => {
         <Link href="/" className="text-2xl hover:underline">
           {clientEnv.appName}
         </Link>
-
-        <div className="flex items-center gap-4">
-          <SwitchTheme />
-        </div>
       </div>
     </div>
   )

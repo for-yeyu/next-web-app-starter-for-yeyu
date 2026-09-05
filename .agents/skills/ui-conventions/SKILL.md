@@ -9,6 +9,8 @@ description: Use when implementing or refactoring src/ui page modules, shared co
 
 Applies to `src/ui/**`.
 
+The base template has a minimal home page and shared providers, not runnable example pages.
+
 ## Structure Rules
 
 1. `src/ui/app` mirrors `src/app` route structure.
@@ -37,6 +39,15 @@ Hard constraints:
 - Do not modify `src/lib/utils/shadcn/**`; it supports shadcn primitives.
 - Follow `project-workflow-conventions` for local props types and `className` extraction thresholds.
 
+## Client Data Boundary
+
+Client components consume request state through hooks, never direct requests:
+
+`src/ui -> src/hooks/api -> src/api -> apiRequest/httpRequest`
+
+Keep interactive sections in focused client components and keep route `index.tsx` files focused
+on composition. Display loading and error states explicitly instead of supplying replacement data.
+
 ## Workflow
 
 1. Implement real pages under `src/ui/app/<route>/index.tsx`.
@@ -54,8 +65,3 @@ Hard constraints:
 - Props are passed only where they carry necessary data or behavior.
 - `src/ui/shadcn/**` and `src/lib/utils/shadcn/**` files are not modified.
 - No UI barrel exports were added.
-
-## References
-
-- `src/ui/README.md`
-- `src/app/README.md`

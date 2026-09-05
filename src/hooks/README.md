@@ -2,6 +2,9 @@
 
 This directory stores application hooks.
 
+No business hooks are included by default. The paths below are documentation examples from
+[Request Chain Example](../../README.md#request-chain-example); create matching API and hook domains only when needed.
+
 Goals:
 - Keep all API-calling hooks in `src/hooks/api`.
 - Mirror `src/api` structure for fast lookup and maintenance.
